@@ -1,0 +1,49 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script type="text/javascript" src="glMatrix-0.9.5.min.js"></script><style type="text/css">.cf-hidden { display: none; } .cf-invisible { visibility: hidden; }</style>
+<script type="text/javascript" src="webgl-utils.js"></script>
+<script type="text/javascript" src="../Project2_bouncingball/MV.js"></script>
+<script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float;
+
+    void main(void) {
+        gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+    }
+</script>
+
+    
+<script type="text/javascript" src="circle.js"></script>
+</head>
+<body onload="webGLStart();">
+    
+    <canvas id="canvas" style="border: none;" width="500" height="500"></canvas>
+    <div style="display: inline-block;">
+        </div>
+        <div id="interactionMenu" style=" position: fixed; bottom:250px; left: 500px;">
+
+            <button type="button" id="fire" onclick="Fire();">Test</button>
+            <button type="button" id="restart" onclick="Restart();">Restart</button>
+
+            <br />
+            <span id="horizontalInput">horizontal speed: 0</span>
+            <input type="range" min="0" max="20" step="0.1" value="1" class="slider" id="horizontal" />
+            <br />
+            <span id="verticalInput">vertical speed: 0</span>
+            <input type="range" min="-5" max="5" step=".1" value="1" class="slider" id="vertical"/>
+            <br />
+            <span id="bouncesLabel">No. of bounce: 0</span>
+            <span id="scoreLabel">Score: 0</span>
+
+        </div>
+    </body>
+</html>

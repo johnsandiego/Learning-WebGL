@@ -1,0 +1,12 @@
+First issue is that the treatment does not follow the approach described in class, which converted mouse positions to the rotation of a virtual trackball (no point to vector routine that converts 2 positions to a vector about which you rotate). Second, in the shader you have
+    gl_Position = ((r*vPosition)+translation)*scaling;
+r is the rotation matrix, translation is a vec4, so this rotates the positions, adds the translation to it, and then scales (maybe... it’s a postmultiply, which is not how one usually does it (for what it’s worth postmultiplying is the same as premultiplying by the matrix transpose, which doesn’t matter with scaling since it’s diagonal, but still weird...) the problem is that scaling after translating results in shearing, which definitely is NOT what you want. if translation were a proper mat4, the order you would want is first scale, then rotate, and then finally translate. 
+    gl_Position = translate * r * scaling * vPosition
+our author provides us with functions to generate rotation, translation, and scaling. Please use them. You could simplfy by doing the multiplication in the .js (with author’s mult function), and then pass that single matrix (the modelView matrix) to cpu and simply
+    gl_Position = modelView * vPosition
+This of course with no projection matrix will be orthographic in canonical volume)
+Now to your keyboard problem... Add an event listener this way:
+    document.onkeydown = handleKeys;
+Then your handleKeys function will be called properly (remove “text” stuff in html). Another issue you will encounter is that the “a” key is 65, w is 87, s is 83, d is 68, q is 81, and e is 69 (ascii codes, integers, so no need for quotes)
+
+Give it another shot, better trackball, more like in class, less like the one you found on the internet, make the modelview in the .js with author’s matrix froming functions, multiply them there, and then pass it to GPU, 

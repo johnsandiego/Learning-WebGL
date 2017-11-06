@@ -1,0 +1,75 @@
+<!-- In some parts of this code I have **adapted** pieces of code from both 
+the online code for the Interactive Graphics Textbook by EDWARD ANGEL, University of New Mexico, and DAVE SHREINER, ARM, Inc. 
+
+as well as syntax and concepts learned from an online beginners tutorial by Indigo Code on Youtube at:
+https://www.youtube.com/watch?v=kB0ZVUrI4Aw&list=PLjcVFFANLS5zH_PeKC6I8p0Pt1hzph_rt
+
+I will be marking specific pieces of code directly copied from these sources, but concepts learned that
+I have adapted (changed quite a bit) I have left unmarked.
+-->
+
+<html>
+	<head>
+		<title> Ball Aimer
+		</title>
+		<!-- From Edward Angel && Dave Shreiner -->
+		<script id="vertex-shader" type="x-shader/x-vertex">
+		attribute vec4 vPos;
+		attribute vec4 vColor;
+		varying vec4 fColor;
+
+		uniform vec4 translation;
+
+		void main()
+		{
+			fColor = vColor;
+		    gl_Position = vPos + translation;
+		}
+		</script>
+
+		<script id="fragment-shader" type="x-shader/x-fragment">
+
+		precision mediump float;
+		varying vec4 fColor;
+
+		void main()
+		{
+		    gl_FragColor = fColor;
+		}
+		</script>
+		<!-- /////////// -->
+
+		<body>
+			<div id = "Menu" style="margin-left:150px">
+				<h2 style="margin-left: 15px"> Hit the target! </h2>
+				<h3 style="margin-left: 50px"> Score = <span id="score-count"></span> </h3>
+				<!-- change x position slider -->
+				<div> VX <input id="dx-slider" type="range"
+					 min="-10" max="10" step="1" value="0" />
+			    </div><br/>
+
+			    <!-- change y position slider -->
+				<div> VY <input id="dy-slider" type="range"
+					 min="-10" max="10" step="1" value="0" />
+				</div><br/>
+
+				<!-- button to shoot the ball -->
+				<button id= "shoot-ball" style="margin-left:32px">Fire!</button>
+
+				<!-- button to reset ball -->
+				<button id= "reset-ball" style="margin-left:25px">Reset</button><br/><br/>
+			</div>
+
+			<canvas id="ball-canvas" width="500" height="500">
+				Your browser does not support HTML 5. Please install and use Chrome.
+			</canvas>
+
+			<script type="text/javascript" src="ball.js"></script>
+			<!-- From Edward Angel && Dave Shreiner -->
+			<script type="text/javascript" src="webgl-utils.js"></script>
+			<script type="text/javascript" src="initShaders.js"></script>
+			<script type="text/javascript" src="MV.js"></script>
+			<!-- -->
+		</body>
+	</head>
+</html>
