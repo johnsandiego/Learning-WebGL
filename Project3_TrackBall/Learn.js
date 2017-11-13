@@ -12,6 +12,7 @@ var tb_startY;
 var tb_trackingMove = false;
 var tb_trackballMove = false;
 var tb_redrawContinue = false;
+var orient;
 window.onload = function init()
 {
     canvas = document.getElementById("gl-canvas");
@@ -64,15 +65,69 @@ window.onload = function init()
     
 }
 
+function colorCube()
+{
+    quad( 1, 0, 3, 2 );
+    quad( 2, 3, 7, 6 );
+    quad( 3, 0, 4, 7 );
+    quad( 6, 5, 1, 2 );
+    quad( 4, 5, 6, 7 );
+    quad( 5, 4, 0, 1 );
+}
+
+function quad(a, b, c, d)
+{
+    var vertices = [
+        vec4( -0.5, -0.5,  0.5, 1.0 ),
+        vec4( -0.5,  0.5,  0.5, 1.0 ),
+        vec4(  0.5,  0.5,  0.5, 1.0 ),
+        vec4(  0.5, -0.5,  0.5, 1.0 ),
+        vec4( -0.5, -0.5, -0.5, 1.0 ),
+        vec4( -0.5,  0.5, -0.5, 1.0 ),
+        vec4(  0.5,  0.5, -0.5, 1.0 ),
+        vec4(  0.5, -0.5, -0.5, 1.0 )
+    ];
+
+    var vertexColors = [
+        [ 0.0, 0.0, 0.0, 1.0 ],  // black
+        [ 1.0, 0.0, 0.0, 1.0 ],  // red
+        [ 1.0, 1.0, 0.0, 1.0 ],  // yellow
+        [ 0.0, 1.0, 0.0, 1.0 ],  // green
+        [ 0.0, 0.0, 1.0, 1.0 ],  // blue
+        [ 1.0, 0.0, 1.0, 1.0 ],  // magenta
+        [ 0.0, 1.0, 1.0, 1.0 ],  // cyan
+        [ 1.0, 1.0, 1.0, 1.0 ]   // white
+    ];
+
+    // We need to parition the quad into two triangles in order for
+    // WebGL to be able to render it.  In this case, we create two
+    // triangles from the quad indices
+
+    //vertex color assigned by the index of the vertex
+
+    var indices = [ a, b, c, a, c, d ];
+
+    for ( var i = 0; i < indices.length; ++i ) {
+        points.push( vertices[indices[i]] );
+
+        // for interpolated colors use
+        //colors.push( vertexColors[indices[i]] );
+
+        // for solid colored faces use
+        colors.push(vertexColors[a]);
+    }
+}
+
 function render()
-{   var temp = mat4();
+{   
+    var temp = mat4();
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    PM = perspective(tb_fov,1.,.1, 20.);
+    PM_loc = perspective(tb_fov,1.0,0.1, 20.0);
     gl.uniformMatrix4fv(PM_loc, false, flatten(PM) );
-    MVM = lookAt(tb_eye,tb_at,tb_up);
+    MVM_loc = lookAt(tb_eye,tb_at,tb_up);
     orient = mat4();
     orient = mult(orient, tbMatrix());
-    MVM = mult(MVM, orient);
+    MVM_loc = mult(MVM, orient);
     gl.uniformMatrix4fv(MVM_loc, false, flatten(MVM) );
     gl.drawArrays(gl.TRIANGLES, 0, NumCubeVertices);
     tb_idle();
@@ -115,17 +170,19 @@ function tb_startMotion( x, y)
 function tb_stopMotion( x, y)
 {
     tb_trackingMouse = false;
- if (tb_startX = x || tb_startY = y)
+ if (tb_startX == x || tb_startY == y)
  { 
     tb_redrawContinue = true;
+     
     tb_angle /= 20.0;
     if(tb_spinFlag) // prevents spinning
         tb_redrawContinue = false;
  }
  else
- { tb_angle     = 0.0;
-  tb_redrawContinue = false;
-  tb_trackballMove  = false;
+ { 
+     tb_angle = 0.0;
+    tb_redrawContinue = false;
+    tb_trackballMove  = false;
  }
 }
 
@@ -147,7 +204,7 @@ function tb_ptov( x, y, width, height)
 
 function tb_mouseMotion( event )
 {
-    var x = event.clientX;
+ var x = event.clientX;
  var y = event.clientY;
  var curPos;
  var d;

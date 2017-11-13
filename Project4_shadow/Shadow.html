@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>Trackball - Translate - Scale</head>
+    <script type="text/javascript" src="webgl-utils.js"></script>
+    <script type="text/javascript" src="initShaders.js"></script>
+    <script type="text/javascript" src="MV.js"></script>
+    <script type="text/javascript" src="Shadow.js"></script>
+    <script type="text/javascript" src="webgl-debug.js"></script>
+    
+    <script id="vertex-shader" type="x-shader">
+        //creating an atribute for the cube vposition
+        
+        attribute vec4 vPosition;
+        attribute vec4 vColor;
+        varying vec4 fColor;
+        
+        uniform mat4 r;
+        uniform mat4 translation;
+        uniform mat4 scaling;
+        
+        void main(){
+            vec4 pos;
+            
+            gl_Position = translation * r * scaling * vPosition;
+            
+            fColor = vColor;
+        }
+    </script>
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        varying vec4 fColor;
+        
+        void main(){
+            gl_FragColor = fColor;
+        }
+    </script>
+    <body>
+        <canvas id="gl-canvas" width="512" height="512">
+            Browser doesn't support HTML5 canvas element. Use Google Chrome
+        </canvas>
+        <br/>
+        <label>Controls:<br/></label> 
+        <label>To scale +/- press Q/E<br/></label>
+        <label> To Translate press W - UP, A - Left, D - Right, S - DOWN.<br/></label>
+        <label>Type input in here</label>
+        <input type="text" onkeypress="handleKeys(event)">
+    </body>
+
+</html>
