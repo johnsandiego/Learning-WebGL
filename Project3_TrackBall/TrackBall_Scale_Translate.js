@@ -42,9 +42,9 @@ var startX, startY;
 var xPos = 0.0;
 var yPos = 0.0;
 var zPos = 0.0;
-var sPosX = 1.0;
-var sPosY = 1.0;
-var sPosZ = 1.0;
+var sPosX = .5;
+var sPosY = .5;
+var sPosZ = .5;
 
 var vPosition;
 var program;
@@ -79,9 +79,9 @@ window.onload = function init()
             xPos,  yPos,     zPos,     1.0  
          ]);
     
-    xPos = 0;
-    yPos = 0;
-    zPos = 0;
+    xPos = 1.9;
+    yPos = 1.5;
+    zPos = 3;
     gl = WebGLDebugUtils.makeDebugContext(gl, throwOnGLError);
     //
     //  Load shaders and initialize attribute buffers
@@ -112,17 +112,14 @@ window.onload = function init()
     
     //create matrix for rotation of cube
     rotationMatrix = mat4();
-    rotationMatrixLoc = gl.getUniformLocation(program, "r");
+    rotationMatrixLoc = gl.getUniformLocation(program, "rotation");
     gl.uniformMatrix4fv(rotationMatrixLoc, false, flatten(rotationMatrix));
     
-    //creates matrix for translation of cube
+    //creates matrix for translation and scaling of cube
     translationMatrix = mat4();
-    translationMatrixLoc = gl.getUniformLocation(program, "translation");
+    translationMatrixLoc = gl.getUniformLocation(program, "PVM");
     gl.uniformMatrix4fv(translationMatrixLoc, false, scaleMatrix);
     
-    //creates matrix for scaling of cube
-    scaleMatrixLoc = gl.getUniformLocation(program, "scaling");
-    gl.uniformMatrix4fv(scaleMatrixLoc, false, scaleMatrix);
     
     //listens to mouse movement mousedown
     canvas.addEventListener("mousedown", function(event){
@@ -156,7 +153,7 @@ window.onload = function init()
 //need your help just using regular keyboard press and not using a input field in html
 function handleKeys(event) {
     var x = event.which || event.keyCode;
-    if (x == "119") {
+    if (x == 119) {
         // w
         yPos += 0.3;
         console.log("y: " + yPos);
@@ -329,7 +326,7 @@ function render(){
         gl.uniformMatrix4fv(rotationMatrixLoc, false, flatten(rotationMatrix));
     }
     gl.uniformMatrix4fv(translationMatrixLoc,false, scaleMatrix);
-    gl.uniformMatrix4fv(scaleMatrixLoc, false, scaleMatrix);
+
     
     gl.drawArrays(gl.TRIANGLES, 0, NumVertices);
     requestAnimFrame(render);

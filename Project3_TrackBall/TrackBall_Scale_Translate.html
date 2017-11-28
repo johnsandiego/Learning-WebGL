@@ -14,14 +14,14 @@
         attribute vec4 vColor;
         varying vec4 fColor;
         
-        uniform mat4 r;
-        uniform mat4 translation;
-        uniform mat4 scaling;
+        uniform mat4 PVM;
+        uniform mat4 MVM;
+        uniform mat4 rotation;
         
-        void main(){
+        void main(void){
             vec4 pos;
             
-            gl_Position = translation * r * scaling * vPosition;
+            gl_Position = PVM * rotation * vPosition;
             
             fColor = vColor;
         }
@@ -30,7 +30,7 @@
         precision mediump float;
         varying vec4 fColor;
         
-        void main(){
+        void main(void){
             gl_FragColor = fColor;
         }
     </script>
