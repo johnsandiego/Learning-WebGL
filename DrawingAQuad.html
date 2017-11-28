@@ -1,0 +1,164 @@
+<html>
+    <head>
+        <canvas id="gl-canvas" width="570" height="570"></canvas>
+        <script id="type/javascript">
+            
+            var gl;
+            var canvas;
+            var vertexBuffer;
+            var vertexBuffer2;
+            var shaderProgram;
+            function render(){
+
+                initGL();
+                
+                shaderProgram = initShader(gl, shaderProgram);
+                createtriangle(gl);
+                
+                var coordinatesVar = gl.getAttribLocation(shaderProgram, 'coordinates');
+                gl.vertexAttribPointer(coordinatesVar, 3, gl.FLOAT, false, 0,0);
+                gl.enableVertexAttribArray(coordinatesVar);
+                gl.clearColor(0.5,0.5,0.5,0.9);
+
+                gl.enable(gl.DEPTH_TEST);
+
+                gl.clear(gl.COLOR_BUFFER_BIT);
+
+                gl.viewport(0,0,canvas.width, canvas.height);
+                //createsmalltriangle(gl);
+                
+                drawTriangle(gl,shaderProgram);
+                
+               // drawTriangle2(gl,shaderProgram);
+
+                
+            }
+            function initGL(){
+               canvas = document.getElementById("gl-canvas");
+                if (!canvas) {
+                    
+                    alert("Error: No canvas found.");
+                    return false;
+                }
+
+                gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+
+                //Check to see if WebGL was found
+                if (!gl) {
+                    alert("Error: No WebGL instance found");
+                    return false;
+                }
+
+            }
+            
+            function createtriangle(webgl){
+                var vertices = [
+                    -0.5,0.5,0.0,   //top xyz
+                    -0.5,-0.5,0.0,  //bottom left
+                    0.5,-0.5,0.0,   //bottom right
+                ];
+                vertexBuffer = webgl.createBuffer();
+
+                webgl.bindBuffer(webgl.ARRAY_BUFFER, vertexBuffer);
+                webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array(vertices), webgl.STATIC_DRAW);
+                //webgl.bindBuffer(webgl.ARRAY_BUFFER, null);
+                
+            }
+
+            
+            function createsmalltriangle(webgl){
+                var vertices2 = [
+                    -0.1,0.5,0.0,   //top xyz
+                    -0.1,-0.1,0.0,  //bottom left
+                    0.1,-0.1,0.1,   //bottom right
+                    0.3,0.3,0.1,
+                ];
+                
+                
+                vertexBuffer2 = webgl.createBuffer();
+
+                webgl.bindBuffer(webgl.ARRAY_BUFFER, vertexBuffer2);
+                webgl.bufferData(webgl.ARRAY_BUFFER, new Float32Array(vertices2), webgl.STATIC_DRAW);
+                //webgl.bindBuffer(webgl.ARRAY_BUFFER, null);
+            }
+            function initShader(gl, shaderProgram){
+                 var vertexCode = 
+                    'attribute vec4 coordinates;'+
+                    'uniform mat4 MVM;'+
+                    'void main(void){' +
+                    'gl_Position = MVM * coordinates;' + '}';
+
+                var vertShader = gl.createShader(gl.VERTEX_SHADER);
+                gl.shaderSource(vertShader, vertexCode);
+                gl.compileShader(vertShader);
+
+                var fragCode = 
+                    'void main(void){'+
+                        'gl_FragColor = vec4(0.0,0.0,0.0,0.1);'+
+                    '}';
+
+                var fragShader = gl.createShader(gl.FRAGMENT_SHADER);
+                gl.shaderSource(fragShader, fragCode);
+                gl.compileShader(fragShader);
+
+                shaderProgram = gl.createProgram();
+                gl.attachShader(shaderProgram, vertShader);
+                gl.attachShader(shaderProgram, fragShader);
+                gl.linkProgram(shaderProgram);
+                gl.useProgram(shaderProgram);
+                
+                
+                
+                return shaderProgram;
+            }
+            function drawTriangle(gl,shaderProgram){ 
+                var Sx = .5, Sy =.5, Sz = .5;
+                var Tx = 0.1, Ty = .2, Tz = .2;
+                var triangleMatrix = new Float32Array([
+                    Sx, 0.0, 0.0, 0.0,
+                    0.0, Sy, 0.0, 0.0,
+                    0.0, 0.0, Sz, 0.0,
+                    Tx, Ty, Tz, 1.0
+                ]);
+                
+                var MVmatrix = gl.getUniformLocation(shaderProgram, 'MVM');
+                gl.uniformMatrix4fv(MVmatrix, false, triangleMatrix);
+                
+
+                //gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);  
+                gl.drawArrays(gl.TRIANGLES_STRIP, 0, 6);
+
+
+
+            }
+            
+            function drawTriangle2(gl,shaderProgram){ 
+                var Sx = 1.5, Sy = 1.5, Sz = 1.0;
+                var Tx = 1.4, Ty = 1.4, Tz = 1.2;
+                var triangleMatrix2 = new Float32Array([
+                    0.2, 0.0, 0.0, 0.0,
+                    0.0, 0.2, 0.0, 0.0,
+                    0.0, 0.0, 0.2, 0.0,
+                    Tx, Ty, Tz, 1.0
+                ]);
+                
+                var MVmatrix2 = gl.getUniformLocation(shaderProgram, 'MVM');
+                gl.uniformMatrix4fv(MVmatrix2, false, triangleMatrix2);
+                //gl.enableVertexAttribArray(MVmatrix2);
+
+                //gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);    
+
+                gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+            }
+        
+            render();
+        </script>
+    
+    
+    
+    
+    </head>
+
+
+</html>

@@ -64,7 +64,7 @@ var vxSlider;
 var vySlider;
 
 var squares = [
-    new DrawableSquare(0, 0, 500, 30, 1, 0, 0),         //Top Wall
+    new DrawableSquare(10, 30, 500, 30, 1, 0, 0),         //Top Wall
     new DrawableSquare(0, 470, 500, 30, 1, 0, 0),       //Bot Wall
     new DrawableSquare(0, 30, 30, 470, 1, 0, 0),        //Left Wall
     new DrawableSquare(470, 30, 30, 470, 1, 0, 0),      //Right Wall
